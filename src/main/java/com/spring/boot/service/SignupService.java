@@ -1,12 +1,15 @@
 package com.spring.boot.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.spring.boot.dao.SignupEntity;
 import com.spring.boot.dao.SignupRepository;
+import com.spring.boot.dto.SignupDTO;
 
 //new SignupService()
 @Service
@@ -15,44 +18,34 @@ public class SignupService {
 	@Autowired
 	private SignupRepository signupRepository; 
 	
-	//From where it is coming ?????
-	//Step-1 pom.xml  - >>	<artifactId>spring-boot-starter-jdbc</artifactId>
-	//step-2 application.properties -
-	//spring.datasource.url=jdbc:mysql://localhost:3306/batch100_db
-	//@Autowired
-	//private DataSource dataSource;
-	
-	
 	public void deleteByUsername(String username) {
 	    	signupRepository.deleteById(username);
 	}
 	
 	
-	public SignupEntity findByUsername(String username) {
-		///JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		//String fecthData = "select username, password , email,gender from signups_tbl where username = ?";
-		SignupEntity signupEntity=signupRepository.findByUsername(username);
-		return signupEntity;
+	public SignupDTO findByUsername(String username) {
+		SignupEntity entity=signupRepository.findByUsername(username);
+		SignupDTO signupDTO=new SignupDTO();
+		BeanUtils.copyProperties(entity, signupDTO);
+		return signupDTO;
 	}
 	
-	public List<SignupEntity> findAll() {
-	//	JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-	//	String fecthData = "select username, password , email,gender from signups_tbl";
+	public List<SignupDTO> findAll() {
 		List<SignupEntity> signupEntities=signupRepository.findAll();
-		return signupEntities;
+		
+		List<SignupDTO> signupDTOs=new ArrayList<SignupDTO>();
+		for(SignupEntity entity : signupEntities) {
+			SignupDTO signupDTO=new SignupDTO();
+			BeanUtils.copyProperties(entity, signupDTO);
+			signupDTOs.add(signupDTO);
+		}
+		return signupDTOs;
 	}
 
-	
-	public void update(SignupEntity signupEntity) {
+	public void saveOrUpdate(SignupDTO signupDTO) {
 		// jdbcTemplate says I will make your jdbc programming super duper easy
-		//JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		//String sql = "update signups_tbl set password =?, email=? ,gender= ? where username = ?";
-		//Object[] data = { signupDTO.getPassword(), signupDTO.getEmail(),
-			//	signupDTO.getGender(),signupDTO.getUsername() };
-		signupRepository.save(signupEntity);
-	}
-	public void save(SignupEntity signupEntity) {
-		// jdbcTemplate says I will make your jdbc programming super duper easy
+		SignupEntity signupEntity=new SignupEntity();
+		BeanUtils.copyProperties(signupDTO, signupEntity);
 		signupRepository.save(signupEntity);
 	}
 

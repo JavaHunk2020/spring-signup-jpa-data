@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-
-<%@page import="com.spring.boot.dao.SignupEntity"%>
-<%@page import="com.spring.boot.DataStore"%>
+<%@page import="com.spring.boot.data.DataStore"%>
+<%@page import="com.spring.boot.dto.SignupDTO"%>
 <%@page import="java.util.List"%>
 <html>
 <head>
@@ -24,11 +23,11 @@
   	  
   	  
   	 <%
-  	List<SignupEntity> signupDTOs=DataStore.getSignupDTOs();
+  	List<SignupDTO> signupDTOs=DataStore.getSignupDTOs();
   	 
   	String colors[]={"yellow","green","pink"}; 
   	 int count=0;
-  	 for(SignupEntity signupDTO :signupDTOs) {
+  	 for(SignupDTO signupDTO :signupDTOs) {
   		 if(count==4){
   			count=0;
   		 }

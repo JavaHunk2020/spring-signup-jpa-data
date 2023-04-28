@@ -1,4 +1,4 @@
-package com.spring.boot;
+package com.spring.boot.dto;
 
 public class SignupDTO {
 

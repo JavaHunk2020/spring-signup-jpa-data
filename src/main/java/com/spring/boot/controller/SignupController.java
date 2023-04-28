@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.spring.boot.DataStore;
-import com.spring.boot.SignupDTO;
-import com.spring.boot.dao.SignupEntity;
+import com.spring.boot.data.DataStore;
+import com.spring.boot.dto.SignupDTO;
 import com.spring.boot.service.SignupService;
 
 @Controller
@@ -27,22 +26,22 @@ public class SignupController {
 		return "login"; // login.jsp
 	}
 
-	@GetMapping("/csignup")
+	@GetMapping({"/csignup","/"})
 	public String showSignup() {
 		return "signup"; // signup.jsp
 	}
 
 	@PostMapping("/csignup")
-	public String posrCreate(@ModelAttribute SignupEntity signupEntity, Model model) {
-		signupService.save(signupEntity);
+	public String posrCreate(@ModelAttribute SignupDTO signupDTO, Model model) {
+		signupService.saveOrUpdate(signupDTO);
 		// JDBC PROGRAMMING
 		model.addAttribute("message", "Hey profile is created successfully");
 		return "signup"; // signup.jsp
 	}
 	@PostMapping("/updateSignup")
-	public String updateSignupPost(@ModelAttribute SignupEntity signupEntity, Model model) {
-		signupService.update(signupEntity);
-		List<SignupEntity>   dtos=signupService.findAll();
+	public String updateSignupPost(@ModelAttribute SignupDTO signupDTO, Model model) {
+		signupService.saveOrUpdate(signupDTO);
+		List<SignupDTO>   dtos=signupService.findAll();
 		DataStore.getSignupDTOs().clear();
 		DataStore.getSignupDTOs().addAll(dtos);
 		return "showSignups"; // showSignups.jsp
@@ -51,7 +50,7 @@ public class SignupController {
 	
 	@GetMapping("/showSignups")
 	public String showSignups() {
-		List<SignupEntity>   dtos=signupService.findAll();
+		List<SignupDTO>   dtos=signupService.findAll();
 		DataStore.getSignupDTOs().clear();
 		DataStore.getSignupDTOs().addAll(dtos);
 		return "showSignups"; // showSignups.jsp
@@ -61,7 +60,7 @@ public class SignupController {
 	@GetMapping("/deleteData")
 	public String deleteSignup(@RequestParam String username, Model model) {
 		signupService.deleteByUsername(username);
-		List<SignupEntity>   dtos=signupService.findAll();
+		List<SignupDTO>   dtos=signupService.findAll();
 		DataStore.getSignupDTOs().clear();
 		DataStore.getSignupDTOs().addAll(dtos);
 		return "showSignups"; // showSignups.jsp
@@ -69,7 +68,7 @@ public class SignupController {
 	
 	@GetMapping("/editData")
 	public String showEditSignup(@RequestParam String username, Model model) {
-		SignupEntity signupDTO=signupService.findByUsername(username);
+		SignupDTO signupDTO=signupService.findByUsername(username);
 	    model.addAttribute("signupDTO", signupDTO);
 	    return "esignup"; // esignup.jsp
 	}
